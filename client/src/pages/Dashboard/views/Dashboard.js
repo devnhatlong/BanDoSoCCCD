@@ -1,35 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { UserOutlined, IdcardOutlined, CarOutlined, FireOutlined, SnippetsOutlined, SettingOutlined, ContainerOutlined } from '@ant-design/icons';
+import { AppstoreOutlined, DesktopOutlined, EnvironmentOutlined, BarChartOutlined } from '@ant-design/icons';
 import { Menu, Layout } from 'antd';
 import { useSelector } from 'react-redux';
 
 import '../styles/style.css';
 import { NavbarLoginComponent } from "../../../components/NavbarLoginComponent/NavbarLoginComponent";
 import { getItem } from "../../../utils/utils";
-import { AdminUser } from "../../Admin/AdminUser/views/AdminUser";
-import { AdminDepartment } from "../../Admin/AdminDepartment/views/AdminDepartment";
-import { FieldOfWork } from "../../Category/FieldOfWork/views/FieldOfWork";
-import { Crime } from "../../Category/Crime/views/Crime";
-import { PATHS } from '../../../constants/path';
-import { PermissionFunction } from "../../Setting/PermissionFunction/views/PermissionFunction";
-import { PermissionField } from "../../Setting/PermissionField/views/PermissionField";
-import { ReportSend } from "../../REPORT/ReportSend/views/ReportSend";
-import { ReportSummary } from "../../REPORT/ReportSummary/views/ReportSummary";
-import { Topic } from "../../Category/Topic/views/Topic";
-import { ReportType } from "../../Category/ReportType/views/ReportType";
-import { AdminProvince } from "../../Admin/AdminProvince/views/AdminProvince";
-// import { AdminDistrict } from "../../Admin/AdminDistrict/views/AdminDistrict";
 import { AdminCommune } from "../../Admin/AdminCommune/views/AdminCommune";
-import { ROLE } from "../../../constants/role";
-import { GeneralSetting } from "../../GeneralSettings/views/GeneralSetting";
-import { SocialOrderNew } from "../../SocialOrder/views/SocialOrderNew";
-import { SocialOrderList } from "../../SocialOrder/views/SocialOrderList";
-import { SocialOrderDetail } from "../../SocialOrder/views/SocialOrderDetail";
-import { DailyReport } from "../../REPORT/DailyReport/views/DailyReport";
-import DailyReportList from "../../REPORT/DailyReport/views/DailyReportList";
-import DailyReportDetail from "../../REPORT/DailyReport/views/DailyReportDetail";
-import DailyReportEdit from "../../REPORT/DailyReport/views/DailyReportEdit";
+import { ProvinceMap } from "../../Overview/ProvinceMap/views/ProvinceMap";
+import { PATHS } from '../../../constants/path';
 
 const { Sider, Content } = Layout;
 
@@ -41,7 +21,7 @@ export const Dashboard = () => {
     // State for collapsed and openKeys
     const [collapsed, setCollapsed] = useState(() => {
         const savedCollapsed = localStorage.getItem('menuCollapsed');
-        return savedCollapsed === 'true'; // Lấy trạng thái từ localStorage
+        return savedCollapsed === 'true';
     });
     const [openKeys, setOpenKeys] = useState([]);
 
@@ -50,100 +30,65 @@ export const Dashboard = () => {
         whiteSpace: 'normal',
         lineHeight: 'normal',
         fontSize: "14px",
-        fontWeight: "600",
-        margin: "14px 0",
+        fontWeight: "400",
+        margin: "8px 0",
     };
 
     const menuChildrenItemStyle = {
         display: "flex",
         alignItems: "center",
         fontSize: "14px",
-        fontWeight: "600",
+        fontWeight: "400",
+        paddingLeft: "48px",
     };
 
     // Menu items
     const items = [
         {
-            key: 'social_order',
-            label: 'Vụ việc về TTXH',
-            icon: <IdcardOutlined />,
+            key: 'overview',
+            label: 'Tổng quan',
+            icon: <AppstoreOutlined />,
             style: menuItemStyle,
             children: [
-                getItem('Thêm vụ việc TTXH', PATHS.SOCIAL_ORDER.NEW, null, null, menuChildrenItemStyle),
-                getItem('Danh sách vụ việc TTXH', PATHS.SOCIAL_ORDER.LIST, null, null, menuChildrenItemStyle),
-                getItem('Tra cứu đối tượng', PATHS.SOCIAL_ORDER.LOOKUP, null, null, menuChildrenItemStyle),
-                getItem('Thống kê số liệu', PATHS.SOCIAL_ORDER.STATS, null, null, menuChildrenItemStyle),
+                getItem('Bản đồ tỉnh', PATHS.OVERVIEW.MAP, null, null, menuChildrenItemStyle),
+                getItem('Dashboard tổng quan', PATHS.OVERVIEW.DASHBOARD, null, null, menuChildrenItemStyle),
+                getItem('Phân tích dữ liệu', PATHS.OVERVIEW.ANALYSIS, null, null, menuChildrenItemStyle),
             ]
         },
         {
-            key: 'traffic',
-            label: 'Giao thông',
-            icon: <CarOutlined />,
+            key: 'monitor',
+            label: 'Giám sát',
+            icon: <DesktopOutlined />,
             style: menuItemStyle,
             children: [
-                getItem('Danh sách TNGT', PATHS.TRAFFIC.INCIDENTS, null, null, menuChildrenItemStyle),
-                getItem('Thống kê vụ TNGT', PATHS.TRAFFIC.STATS, null, null, menuChildrenItemStyle),
+                getItem('Dữ liệu thời gian thực', PATHS.MONITOR.REALTIME, null, null, menuChildrenItemStyle),
+                getItem('Theo dõi chiến dịch', PATHS.MONITOR.CAMPAIGN, null, null, menuChildrenItemStyle),
+                getItem('Chi tiết chiến dịch', PATHS.MONITOR.CAMPAIGN_DETAIL, null, null, menuChildrenItemStyle),
             ]
         },
         {
-            key: 'fire-explosions',
-            label: 'Phòng cháy chữa cháy',
-            icon: <FireOutlined />,
+            key: 'administrative',
+            label: 'Đơn vị hành chính',
+            icon: <EnvironmentOutlined />,
             style: menuItemStyle,
             children: [
-                getItem('Danh sách vụ cháy/nổ', PATHS.FIRE_EXPLOSIONS.LIST, null, null, menuChildrenItemStyle),
-                getItem('Thống kê vụ cháy/nổ', PATHS.FIRE_EXPLOSIONS.STATS, null, null, menuChildrenItemStyle),
+                getItem('Cấp xã/phường', PATHS.ADMINISTRATIVE.COMMUNE, null, null, menuChildrenItemStyle),
+                getItem('Tổng quan xã/phường', PATHS.ADMINISTRATIVE.COMMUNE_OVERVIEW, null, null, menuChildrenItemStyle),
             ]
         },
         {
             key: 'report',
-            label: 'Báo cáo - tổng hợp',
-            icon: <ContainerOutlined />,
+            label: 'Báo cáo & Xếp hạng',
+            icon: <BarChartOutlined />,
             style: menuItemStyle,
             children: [
-                getItem('Báo cáo ngày', PATHS.REPORT.DAILY_NEW, null, null, menuChildrenItemStyle),
-                getItem('Danh sách báo cáo ngày', PATHS.REPORT.DAILY_LIST, null, null, menuChildrenItemStyle),
-                getItem('Gửi báo cáo', PATHS.REPORT.SEND, null, null, menuChildrenItemStyle),
-                user?.role === ROLE.ADMIN && getItem('Tổng hợp báo cáo', PATHS.REPORT.SUMMARY, null, null, menuChildrenItemStyle),
+                getItem('Xếp hạng & So sánh', PATHS.REPORT.RANKING, null, null, menuChildrenItemStyle),
+                getItem('Bảng xếp hạng', PATHS.REPORT.LEADERBOARD, null, null, menuChildrenItemStyle),
+                getItem('Báo cáo lịch sử', PATHS.REPORT.HISTORY, null, null, menuChildrenItemStyle),
+                getItem('Biểu đồ phân tích', PATHS.REPORT.CHART, null, null, menuChildrenItemStyle),
             ]
         },
-        user?.role === ROLE.ADMIN && {
-            key: 'category',
-            label: 'Quản lý danh mục',
-            icon: <SnippetsOutlined />,
-            style: menuItemStyle,
-            children: [
-                getItem('Lĩnh vực vụ việc', PATHS.CATEGORY.FIELD_OF_WORK, null, null, menuChildrenItemStyle),
-                getItem('Tội danh', PATHS.CATEGORY.CRIME, null, null, menuChildrenItemStyle),
-                getItem('Chuyên đề', PATHS.CATEGORY.TOPIC, null, null, menuChildrenItemStyle),
-                getItem('Loại báo cáo', PATHS.CATEGORY.REPORT_TYPE, null, null, menuChildrenItemStyle),
-            ]
-        },
-        user?.role === ROLE.ADMIN && {
-            key: 'setting',
-            label: 'Cấu hình',
-            icon: <SettingOutlined />,
-            style: menuItemStyle,
-            children: [
-                // getItem('Phân quyền chức năng', PATHS.SETTING.PERMISSION_FUNCTION, null, null, menuChildrenItemStyle),
-                getItem('Phân quyền lĩnh vực vụ việc', PATHS.SETTING.PERMISSION_FIELD, null, null, menuChildrenItemStyle),
-                getItem('Cài đặt chung', PATHS.SETTING.GENERAL, null, null, menuChildrenItemStyle),
-            ]
-        },
-        user?.role === ROLE.ADMIN && {
-            key: 'admin',
-            label: 'Quản trị',
-            icon: <UserOutlined />,
-            style: menuItemStyle,
-            children: [
-                getItem('Tài khoản người dùng', PATHS.ADMIN.USER, null, null, menuChildrenItemStyle),
-                getItem('Đơn vị / Phòng ban', PATHS.ADMIN.DEPARTMENT, null, null, menuChildrenItemStyle),
-                getItem('Tỉnh / thành phố', PATHS.ADMIN.PROVINCE, null, null, menuChildrenItemStyle),
-                // getItem('Quận / huyện', PATHS.ADMIN.DISTRICT, null, null, menuChildrenItemStyle),
-                getItem('Xã, phường, thị trấn', PATHS.ADMIN.COMMUNE, null, null, menuChildrenItemStyle),
-            ]
-        },
-    ].filter(Boolean); // Remove null items
+    ].filter(Boolean);
 
     // Handle menu click
     const handleOnClick = ({ key }) => {
@@ -160,38 +105,25 @@ export const Dashboard = () => {
     const toggleCollapsed = () => {
         const newCollapsed = !collapsed;
         setCollapsed(newCollapsed);
-        localStorage.setItem('menuCollapsed', newCollapsed); // Save state to localStorage
+        localStorage.setItem('menuCollapsed', newCollapsed);
     };
 
     // Sync openKeys with URL
     useEffect(() => {
         const pathToKeyMap = {
-            [PATHS.SOCIAL_ORDER.NEW]: 'social_order',
-            [PATHS.SOCIAL_ORDER.LIST]: 'social_order',
-            [PATHS.SOCIAL_ORDER.LOOKUP]: 'social_order',
-            [PATHS.SOCIAL_ORDER.STATS]: 'social_order',
-            [PATHS.TRAFFIC.INCIDENTS]: 'traffic',
-            [PATHS.TRAFFIC.STATS]: 'traffic',
-            [PATHS.FIRE_EXPLOSIONS.LIST]: 'fire-explosions',
-            [PATHS.FIRE_EXPLOSIONS.STATS]: 'fire-explosions',
-            [PATHS.REPORT.DAILY_NEW]: 'report',
-            [PATHS.REPORT.DAILY_LIST]: 'report',
-            [PATHS.REPORT.SEND]: 'report',
-            [PATHS.REPORT.SUMMARY]: 'report',
-            [PATHS.CATEGORY.FIELD_OF_WORK]: 'category',
-            [PATHS.CATEGORY.CRIME]: 'category',
-            [PATHS.CATEGORY.TOPIC]: 'category',
-            [PATHS.CATEGORY.REPORT_TYPE]: 'category',
-            [PATHS.SETTING.PERMISSION_FUNCTION]: 'setting',
-            [PATHS.SETTING.PERMISSION_FIELD]: 'setting',
-            [PATHS.SETTING.GENERAL]: 'setting',
-
-
-            [PATHS.ADMIN.USER]: 'admin',
-            [PATHS.ADMIN.DEPARTMENT]: 'admin',
-            [PATHS.ADMIN.PROVINCE]: 'admin',
-            // [PATHS.ADMIN.DISTRICT]: 'admin',
-            [PATHS.ADMIN.COMMUNE]: 'admin',
+            [PATHS.OVERVIEW.MAP]: 'overview',
+            [PATHS.OVERVIEW.DASHBOARD]: 'overview',
+            [PATHS.OVERVIEW.ANALYSIS]: 'overview',
+            [PATHS.MONITOR.REALTIME]: 'monitor',
+            [PATHS.MONITOR.CAMPAIGN]: 'monitor',
+            [PATHS.MONITOR.CAMPAIGN_DETAIL]: 'monitor',
+            [PATHS.ADMINISTRATIVE.DISTRICT]: 'administrative',
+            [PATHS.ADMINISTRATIVE.COMMUNE]: 'administrative',
+            [PATHS.ADMINISTRATIVE.COMMUNE_OVERVIEW]: 'administrative',
+            [PATHS.REPORT.RANKING]: 'report',
+            [PATHS.REPORT.LEADERBOARD]: 'report',
+            [PATHS.REPORT.HISTORY]: 'report',
+            [PATHS.REPORT.CHART]: 'report',
         };
 
         const currentPath = location.pathname;
@@ -212,8 +144,6 @@ export const Dashboard = () => {
         };
 
         window.addEventListener('resize', handleResize);
-
-        // Set initial state
         handleResize();
 
         return () => {
@@ -256,7 +186,7 @@ export const Dashboard = () => {
                         marginTop: 0,
                         marginRight: 12,
                         marginBottom: 0,
-                        marginLeft: collapsed ? 90 : 310, // Tách riêng marginLeft
+                        marginLeft: collapsed ? 90 : 310,
                         padding: 18,
                         background: '#fff',
                         minHeight: '280px',
@@ -265,35 +195,33 @@ export const Dashboard = () => {
                     }}
                 >
                     <Routes>
-                        <Route path={PATHS.SOCIAL_ORDER.NEW} element={<SocialOrderNew />} />
-                        <Route path={PATHS.SOCIAL_ORDER.LIST} element={<SocialOrderList />} />
-                        <Route path={PATHS.SOCIAL_ORDER.DETAIL} element={<SocialOrderDetail />} />
-                        <Route path={PATHS.SOCIAL_ORDER.EDIT} element={<SocialOrderNew />} />
+                        {/* Tổng quan */}
+                        <Route path={PATHS.OVERVIEW.MAP} element={<ProvinceMap />} />
+                        <Route path={PATHS.OVERVIEW.DASHBOARD} element={<div>Dashboard tổng quan</div>} />
+                        <Route path={PATHS.OVERVIEW.ANALYSIS} element={<div>Phân tích dữ liệu</div>} />
                         
-                        <Route path={PATHS.REPORT.DAILY_NEW} element={<DailyReport />} />
-                        <Route path={PATHS.REPORT.DAILY_LIST} element={<DailyReportList />} />
-                        <Route path={PATHS.REPORT.DAILY_DETAIL} element={<DailyReportDetail />} />
-                        <Route path={PATHS.REPORT.DAILY_EDIT} element={<DailyReportEdit />} />
-                        <Route path={PATHS.REPORT.SEND} element={<ReportSend />} />
-                        <Route path={PATHS.REPORT.SUMMARY} element={<ReportSummary />} />
-                        <Route path={PATHS.CATEGORY.FIELD_OF_WORK} element={<FieldOfWork />} />
-                        <Route path={PATHS.CATEGORY.CRIME} element={<Crime />} />
-                        <Route path={PATHS.CATEGORY.TOPIC} element={<Topic />} />
-                        <Route path={PATHS.CATEGORY.REPORT_TYPE} element={<ReportType />} />
-                        {/* <Route path={PATHS.SETTING.PERMISSION_FUNCTION} element={<PermissionFunction />} /> */}
-                        <Route path={PATHS.SETTING.PERMISSION_FIELD} element={<PermissionField />} />
-                        <Route path={PATHS.SETTING.GENERAL} element={<GeneralSetting />} />
-                        <Route path={PATHS.ADMIN.USER} element={<AdminUser />} />
-                        <Route path={PATHS.ADMIN.DEPARTMENT} element={<AdminDepartment />} />
-                        <Route path={PATHS.ADMIN.PROVINCE} element={<AdminProvince />} />
-                        {/* <Route path={PATHS.ADMIN.DISTRICT} element={<AdminDistrict />} /> */}
-                        <Route path={PATHS.ADMIN.COMMUNE} element={<AdminCommune />} />
+                        {/* Giám sát */}
+                        <Route path={PATHS.MONITOR.REALTIME} element={<div>Dữ liệu thời gian thực</div>} />
+                        <Route path={PATHS.MONITOR.CAMPAIGN} element={<div>Theo dõi chiến dịch</div>} />
+                        <Route path={PATHS.MONITOR.CAMPAIGN_DETAIL} element={<div>Chi tiết chiến dịch</div>} />
+                        
+                        {/* Đơn vị hành chính */}
+                        <Route path={PATHS.ADMINISTRATIVE.DISTRICT} element={<div>Cấp huyện</div>} />
+                        <Route path={PATHS.ADMINISTRATIVE.COMMUNE} element={<AdminCommune />} />
+                        <Route path={PATHS.ADMINISTRATIVE.COMMUNE_OVERVIEW} element={<div>Tổng quan xã/phường</div>} />
+                        
+                        {/* Báo cáo & Xếp hạng */}
+                        <Route path={PATHS.REPORT.RANKING} element={<div>Xếp hạng & So sánh</div>} />
+                        <Route path={PATHS.REPORT.LEADERBOARD} element={<div>Bảng xếp hạng</div>} />
+                        <Route path={PATHS.REPORT.HISTORY} element={<div>Báo cáo lịch sử</div>} />
+                        <Route path={PATHS.REPORT.CHART} element={<div>Biểu đồ phân tích</div>} />
+                        
                         <Route
                             path="*"
                             element={(
                                 <div style={{ padding: '24px', background: '#fff', minHeight: '280px' }}>
-                                    <h1>Số Liệu Cơ Bản</h1>
-                                    <p>Sản phẩm của Đội Công nghệ thông tin - Phòng Tham mưu - Bình Thuận.</p>
+                                    <h1>Bản đồ số CCCD-VNeID Lâm Đồng</h1>
+                                    <p>Sản phẩm của Đội Công nghệ thông tin - Phòng Tham mưu - Lâm Đồng.</p>
                                     <p>Vui lòng chọn một tùy chọn từ menu để bắt đầu.</p>
                                 </div>
                             )}

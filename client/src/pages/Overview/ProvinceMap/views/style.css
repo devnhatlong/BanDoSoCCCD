@@ -1,0 +1,80 @@
+.province-map-container {
+    background: #f0f2f5;
+    min-height: calc(100vh - 64px);
+}
+
+.province-map-header {
+    background: #fff;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.map-placeholder {
+    min-height: 500px;
+    background: #f9f9f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed #d9d9d9;
+    border-radius: 4px;
+}
+
+.hotspot-card {
+    margin-bottom: 12px;
+    transition: all 0.3s;
+}
+
+.hotspot-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Quick Action Buttons */
+.quick-action-btn-first {
+    transition: all 0.3s;
+}
+
+.quick-action-btn-first:hover {
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+}
+
+.quick-action-btn-outline {
+    border: 1px solid #d9d9d9;
+    transition: all 0.3s;
+}
+
+.quick-action-btn-outline:hover {
+    background: #00bcd4 !important;
+    color: white !important;
+    border-color: #00bcd4 !important;
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(0, 188, 212, 0.3);
+}
+
+/* Navigation Buttons */
+.nav-btn {
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.nav-btn:hover {
+    background: #00bcd4 !important;
+    color: white !important;
+    border-color: #00bcd4 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 188, 212, 0.3);
+}
+
+.nav-btn-first {
+    background: #00bcd4;
+    color: white;
+    border: none;
+    transition: all 0.3s;
+}
+
+.nav-btn-first:hover {
+    background: #00acc1 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 188, 212, 0.3);
+}
